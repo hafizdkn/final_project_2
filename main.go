@@ -3,10 +3,11 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 
+	"final_project_2/auth"
 	"final_project_2/database"
 	"final_project_2/handler"
-	"final_project_2/helper"
 	"final_project_2/middleware"
+	"final_project_2/photo"
 	"final_project_2/user"
 )
 
@@ -19,9 +20,13 @@ func main() {
 
 	userRepository := user.NewUserRepository(db)
 	userService := user.NewUserService(userRepository)
-	authservice := helper.NewJwtService()
+	authservice := auth.NewJwtService()
+
+	photoRepository := photo.NewPhotoRepository(db)
+	photoService := photo.NewServiceRepository(photoRepository)
 
 	userHandler := handler.NewUserHandler(userService, authservice)
+	photoHandler := handler.NewPhotoHandler(photoService)
 
 	app := gin.Default()
 	user := app.Group("/users")
@@ -30,7 +35,12 @@ func main() {
 		user.POST("/login", userHandler.UserLogin)
 		user.GET("/users", userHandler.GetAllUsers)
 		user.POST("/update", middleware.AuthMiddleware(authservice, userService), userHandler.UpdateUser)
-		user.GET("/delete", middleware.AuthMiddleware(authservice, userService), userHandler.DeleteUser)
+		user.DELETE("/delete", middleware.AuthMiddleware(authservice, userService), userHandler.DeleteUser)
+
+		user.POST("/photos", middleware.AuthMiddleware(authservice, userService), photoHandler.CreatePhoto)
+		user.GET("/photos", photoHandler.GetPhotos)
+		user.PUT("/photos/:photoId", middleware.AuthMiddleware(authservice, userService), photoHandler.UpdatePhoto)
+		user.DELETE("/photos/:photoId", middleware.AuthMiddleware(authservice, userService), photoHandler.DeletePhoto)
 	}
 
 	app.Run(":8080")
