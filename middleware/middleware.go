@@ -7,11 +7,12 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 
+	"final_project_2/auth"
 	"final_project_2/helper"
 	"final_project_2/user"
 )
 
-func AuthMiddleware(authService helper.Service, userService user.Service) gin.HandlerFunc {
+func AuthMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		unauthorizedResponse := "Unauthorized"
 		cantParseTokenReponse := "Can't parse token"

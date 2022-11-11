@@ -3,16 +3,17 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 
+	"final_project_2/auth"
 	"final_project_2/helper"
 	"final_project_2/user"
 )
 
 type userHandler struct {
 	userService user.Service
-	authService helper.Service
+	authService auth.Service
 }
 
-func NewUserHandler(userService user.Service, authService helper.Service) *userHandler {
+func NewUserHandler(userService user.Service, authService auth.Service) *userHandler {
 	return &userHandler{userService, authService}
 }
 
@@ -92,7 +93,7 @@ func (h *userHandler) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	helper.WriteJsonRespnse(c, helper.SuccessResponse("", "Succes delete user"))
+	helper.WriteJsonRespnse(c, helper.SuccessResponse("", "Your account has been successfully deleted"))
 }
 
 func (h *userHandler) GetAllUsers(c *gin.Context) {

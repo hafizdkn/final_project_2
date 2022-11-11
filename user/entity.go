@@ -1,16 +1,10 @@
 package user
 
-import "time"
+import (
+	"final_project_2/database"
+)
 
-type User struct {
-	ID        int    `json:"id"`
-	Username  string `json:"username"`
-	Email     string `json:"email"`
-	Password  string `json:"password"`
-	Age       int    `json:"age"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
+type User database.User
 
 type UserResponse struct {
 	ID       int    `json:"id"`
