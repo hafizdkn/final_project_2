@@ -32,7 +32,7 @@ func (r *repository) CreateUser(user User) (User, error) {
 func (r *repository) GetUsers() ([]User, error) {
 	users := make([]User, 0)
 
-	if err := r.db.Debug().Find(&users).Error; err != nil {
+	if err := r.db.Preload("Photos").Find(&users).Error; err != nil {
 		return users, err
 	}
 
