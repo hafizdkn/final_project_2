@@ -2,14 +2,16 @@ package photo
 
 import (
 	"errors"
+
+	"final_project_2/helper"
 )
 
 type Service interface {
 	UpdatePhoto(input PhotoUpdateInput, photoId, currentUserId int) (Photo, error)
 	CreatePhoto(input PhotoInput, userId int) (Photo, error)
-	GetPhotoById(id int) (Photo, error)
-	GetPhotos() ([]Photo, error)
+	GetPhotoById(photoId, currentUserId int) (Photo, error)
 	DeletePhoto(photoId, currentUserId int) error
+	GetPhotos() ([]Photo, error)
 }
 
 type service struct {
@@ -45,10 +47,14 @@ func (s *service) GetPhotos() ([]Photo, error) {
 	return photos, nil
 }
 
-func (s *service) GetPhotoById(id int) (Photo, error) {
-	photo, err := s.repository.GetPhotoById(id)
+func (s *service) GetPhotoById(photoId, currentUserId int) (Photo, error) {
+	photo, err := s.repository.GetPhotoById(photoId)
 	if err != nil {
 		return photo, err
+	}
+
+	if photo.UserId != currentUserId {
+		return photo, errors.New(helper.ErrUnauthorized.Error())
 	}
 
 	return photo, nil
@@ -60,13 +66,9 @@ func (s *service) UpdatePhoto(input PhotoUpdateInput, photoId, currentUserId int
 		kemudian nilai kembalian akan di cek apakah field photo.UserId sama dengan currentUserid, jika tidak sama,
 		kembalikan error, jika sama update nilai photo.
 	*/
-	photo, err := s.repository.GetPhotoById(photoId)
+	photo, err := s.GetPhotoById(photoId, currentUserId)
 	if err != nil {
 		return photo, err
-	}
-
-	if photo.UserId != currentUserId {
-		return photo, errors.New("User unauthorized")
 	}
 
 	photo.Title = input.Title
@@ -89,13 +91,9 @@ func (s *service) DeletePhoto(photoId, currentUserId int) error {
 		kemudian nilai kembalian akan di cek apakah field photo.UserId sama dengan currentUserid, jika tidak sama,
 		kembalikan error, jika sama delete data photo
 	*/
-	photo, err := s.repository.GetPhotoById(photoId)
+	_, err := s.GetPhotoById(photoId, currentUserId)
 	if err != nil {
 		return err
-	}
-
-	if photo.UserId != currentUserId {
-		return errors.New("User unauthorized")
 	}
 
 	if err := s.repository.DeletePhoto(photoId); err != nil {

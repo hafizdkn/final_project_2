@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -77,7 +76,6 @@ func (h *photoHandler) UpdatePhoto(c *gin.Context) {
 			return
 		}
 
-		fmt.Println("jalan2")
 		helper.WriteJsonRespnse(c, helper.InternalServerError(err))
 		return
 	}
