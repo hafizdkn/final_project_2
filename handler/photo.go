@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -56,17 +56,11 @@ func (h *photoHandler) UpdatePhoto(c *gin.Context) {
 	var input photo.PhotoUpdateInput
 
 	currentUser := c.MustGet("currentUser").(user.User)
-	UserId := currentUser.ID
+	currentUserId := currentUser.ID
 
-	userIdInput, err := strconv.Atoi(c.Param("photoId"))
+	photoId, err := strconv.Atoi(c.Param("photoId"))
 	if err != nil {
 		helper.WriteJsonRespnse(c, helper.BadRequestResponse(err))
-		return
-	}
-
-	if userIdInput != UserId {
-		err := errors.New("User unauthorized")
-		helper.WriteJsonRespnse(c, helper.UnauthorizedResponse(err, ""))
 		return
 	}
 
@@ -76,8 +70,14 @@ func (h *photoHandler) UpdatePhoto(c *gin.Context) {
 		return
 	}
 
-	p, err := h.photoService.UpdatePhoto(input, UserId)
+	p, err := h.photoService.UpdatePhoto(input, photoId, currentUserId)
 	if err != nil {
+		if err.Error() == helper.ErrUnauthorized.Error() {
+			helper.WriteJsonRespnse(c, helper.UnauthorizedResponse(err, ""))
+			return
+		}
+
+		fmt.Println("jalan2")
 		helper.WriteJsonRespnse(c, helper.InternalServerError(err))
 		return
 	}
@@ -88,21 +88,20 @@ func (h *photoHandler) UpdatePhoto(c *gin.Context) {
 
 func (h *photoHandler) DeletePhoto(c *gin.Context) {
 	currentUser := c.MustGet("currentUser").(user.User)
-	UserId := currentUser.ID
+	currentUserId := currentUser.ID
 
-	userIdInput, err := strconv.Atoi(c.Param("photoId"))
+	photoId, err := strconv.Atoi(c.Param("photoId"))
 	if err != nil {
 		helper.WriteJsonRespnse(c, helper.BadRequestResponse(err))
 		return
 	}
 
-	if userIdInput != UserId {
-		err := errors.New("User unauthorized")
-		helper.WriteJsonRespnse(c, helper.UnauthorizedResponse(err, ""))
-		return
-	}
+	if err := h.photoService.DeletePhoto(photoId, currentUserId); err != nil {
+		if err.Error() == helper.ErrUnauthorized.Error() {
+			helper.WriteJsonRespnse(c, helper.UnauthorizedResponse(err, ""))
+			return
+		}
 
-	if err := h.photoService.DeletePhoto(UserId); err != nil {
 		helper.WriteJsonRespnse(c, helper.InternalServerError(err))
 		return
 	}

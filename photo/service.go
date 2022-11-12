@@ -1,11 +1,15 @@
 package photo
 
+import (
+	"errors"
+)
+
 type Service interface {
-	UpdatePhoto(input PhotoUpdateInput, id int) (Photo, error)
+	UpdatePhoto(input PhotoUpdateInput, photoId, currentUserId int) (Photo, error)
 	CreatePhoto(input PhotoInput, userId int) (Photo, error)
 	GetPhotoById(id int) (Photo, error)
 	GetPhotos() ([]Photo, error)
-	DeletePhoto(id int) error
+	DeletePhoto(photoId, currentUserId int) error
 }
 
 type service struct {
@@ -50,10 +54,19 @@ func (s *service) GetPhotoById(id int) (Photo, error) {
 	return photo, nil
 }
 
-func (s *service) UpdatePhoto(input PhotoUpdateInput, id int) (Photo, error) {
-	photo, err := s.repository.GetPhotoById(id)
+func (s *service) UpdatePhoto(input PhotoUpdateInput, photoId, currentUserId int) (Photo, error) {
+	/*
+		method ini akan memanggil method GetPhotoById dan mengembalikan nilai photo berdasarkan request photoId,
+		kemudian nilai kembalian akan di cek apakah field photo.UserId sama dengan currentUserid, jika tidak sama,
+		kembalikan error, jika sama update nilai photo.
+	*/
+	photo, err := s.repository.GetPhotoById(photoId)
 	if err != nil {
 		return photo, err
+	}
+
+	if photo.UserId != currentUserId {
+		return photo, errors.New("User unauthorized")
 	}
 
 	photo.Title = input.Title
@@ -70,8 +83,22 @@ func (s *service) UpdatePhoto(input PhotoUpdateInput, id int) (Photo, error) {
 	return updatedPhoto, nil
 }
 
-func (s *service) DeletePhoto(id int) error {
-	if err := s.repository.DeletePhoto(id); err != nil {
+func (s *service) DeletePhoto(photoId, currentUserId int) error {
+	/*
+		method ini akan memanggil method GetPhotoById dan mengembalikan nilai photo berdasarkan request photoId,
+		kemudian nilai kembalian akan di cek apakah field photo.UserId sama dengan currentUserid, jika tidak sama,
+		kembalikan error, jika sama delete data photo
+	*/
+	photo, err := s.repository.GetPhotoById(photoId)
+	if err != nil {
+		return err
+	}
+
+	if photo.UserId != currentUserId {
+		return errors.New("User unauthorized")
+	}
+
+	if err := s.repository.DeletePhoto(photoId); err != nil {
 		return err
 	}
 

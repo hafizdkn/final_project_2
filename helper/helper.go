@@ -1,9 +1,13 @@
 package helper
 
 import (
+	"errors"
+
 	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 )
+
+var ErrUnauthorized = errors.New("User unauthorized")
 
 func GeneratePasswordHash(password string) (string, error) {
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
