@@ -9,6 +9,7 @@ import (
 	"final_project_2/handler"
 	"final_project_2/middleware"
 	"final_project_2/photo"
+	socialmedia "final_project_2/socialMedia"
 	"final_project_2/user"
 )
 
@@ -29,9 +30,13 @@ func main() {
 	commentRepository := comment.NewCommentRepository(db)
 	commentService := comment.NewServiceRepository(commentRepository)
 
+	sosmedRepository := socialmedia.NewSocialMediaRepository(db)
+	sosmedService := socialmedia.NewServiceRepository(sosmedRepository)
+
 	userHandler := handler.NewUserHandler(userService, authservice)
 	photoHandler := handler.NewPhotoHandler(photoService)
 	commentHandler := handler.NewCommentHandler(commentService)
+	sosmedHandler := handler.NewSocialMediahandler(sosmedService)
 
 	app := gin.Default()
 	user := app.Group("/users")
@@ -51,6 +56,11 @@ func main() {
 		user.GET("/comments", middleware.AuthMiddleware(authservice, userService), commentHandler.GetComments)
 		user.PUT("/comments/:commentId", middleware.AuthMiddleware(authservice, userService), commentHandler.UpdateComment)
 		user.DELETE("/comments/:commentId", middleware.AuthMiddleware(authservice, userService), commentHandler.DeleteComment)
+
+		user.POST("/socialmedias", middleware.AuthMiddleware(authservice, userService), sosmedHandler.CreateSocialMedia)
+		user.GET("/socialmedias", middleware.AuthMiddleware(authservice, userService), sosmedHandler.GetSocialMedias)
+		user.PUT("/socialmedias/:socialMediaId", middleware.AuthMiddleware(authservice, userService), sosmedHandler.UpdateSocialMedia)
+		user.DELETE("/socialmedias/:socialMediaId", middleware.AuthMiddleware(authservice, userService), sosmedHandler.DeleteSocialMedia)
 	}
 
 	app.Run(":8080")

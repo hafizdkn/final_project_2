@@ -16,7 +16,7 @@ func NewDatabase() (*gorm.DB, error) {
 }
 
 func Migration(db *gorm.DB) {
-	err := db.AutoMigrate(&User{}, &Photo{}, &Comment{})
+	err := db.AutoMigrate(&User{}, &Photo{}, &Comment{}, &SocialMedia{})
 	if err != nil {
 		panic(err)
 	}
