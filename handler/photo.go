@@ -104,6 +104,6 @@ func (h *photoHandler) DeletePhoto(c *gin.Context) {
 		return
 	}
 
-	response := helper.SuccessResponse("", "Your photo has been successfully deleted")
+	response := helper.SuccessResponse(nil, "Your photo has been successfully deleted")
 	helper.WriteJsonRespnse(c, response)
 }

@@ -93,7 +93,7 @@ func (h *userHandler) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	helper.WriteJsonRespnse(c, helper.SuccessResponse("", "Your account has been successfully deleted"))
+	helper.WriteJsonRespnse(c, helper.SuccessResponse(nil, "Your account has been successfully deleted"))
 }
 
 func (h *userHandler) GetAllUsers(c *gin.Context) {

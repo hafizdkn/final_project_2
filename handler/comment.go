@@ -105,6 +105,6 @@ func (h *commentHandler) DeleteComment(c *gin.Context) {
 		return
 	}
 
-	response := helper.SuccessResponse("", "Your comment has benn successfully deleted")
+	response := helper.SuccessResponse(nil, "Your comment has benn successfully deleted")
 	helper.WriteJsonRespnse(c, response)
 }
