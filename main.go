@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/gin-gonic/gin"
 
 	"final_project_2/auth"
@@ -14,11 +17,10 @@ import (
 )
 
 func main() {
-	db, err := database.NewDatabase()
+	db, err := database.ConnectPostgresGORM()
 	if err != nil {
 		panic(err)
 	}
-	database.Migration(db)
 
 	userRepository := user.NewUserRepository(db)
 	userService := user.NewUserService(userRepository)
@@ -63,5 +65,5 @@ func main() {
 		user.DELETE("/socialmedias/:socialMediaId", middleware.AuthMiddleware(authservice, userService), sosmedHandler.DeleteSocialMedia)
 	}
 
-	app.Run(":8080")
+	app.Run(fmt.Sprintf(":%s", os.Getenv("PORT")))
 }
