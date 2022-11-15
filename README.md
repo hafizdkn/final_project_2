@@ -23,19 +23,19 @@
     * Photo
       * https://finalproject2-production-ff55.up.railway.app/users/photos         (POST)
       * https://finalproject2-production-ff55.up.railway.app/users/photos         (GET)
-      * https://finalproject2-production-ff55.up.railway.app/users/photos/photoId (PUT)
-      * https://finalproject2-production-ff55.up.railway.app/users/photos/photoId (DELETE)
+      * https://finalproject2-production-ff55.up.railway.app/users/photos/:photoId (PUT)
+      * https://finalproject2-production-ff55.up.railway.app/users/photos/:photoId (DELETE)
       
     * Comment
       * https://finalproject2-production-ff55.up.railway.app/users/comments           (POST)
       * https://finalproject2-production-ff55.up.railway.app/users/comments           (GET)
-      * https://finalproject2-production-ff55.up.railway.app/users/comments/commentId (PUT)
-      * https://finalproject2-production-ff55.up.railway.app/users/comments/commentId (DELETE)
+      * https://finalproject2-production-ff55.up.railway.app/users/comments/:commentId (PUT)
+      * https://finalproject2-production-ff55.up.railway.app/users/comments/:commentId (DELETE)
       
     * Social Media
       * https://finalproject2-production-ff55.up.railway.app/users/socialmedias               (POST)
       * https://finalproject2-production-ff55.up.railway.app/users/socialmedias               (GET)
-      * https://finalproject2-production-ff55.up.railway.app/users/socialmedias/socialMediaId (PUT)
-      * https://finalproject2-production-ff55.up.railway.app/users/socialmedias/socialMediaId (PUT)
+      * https://finalproject2-production-ff55.up.railway.app/users/socialmedias/:socialMediaId (PUT)
+      * https://finalproject2-production-ff55.up.railway.app/users/socialmedias/:socialMediaId (PUT)
     
     
